@@ -10,7 +10,8 @@ app.use(express.json());
 
 
 // ROUTES
-
+require("./routing/apiRoutes")(app);
+require("./routing/htmlRoutes")(app);
 
 
 // LISTENER
