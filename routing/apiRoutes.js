@@ -1,6 +1,6 @@
-var friendsData = require("../app/data/friends")
+var friendsData = require("../app/data/friends.js")
 
-
+// Routing //
 module.exports = function (app) {
 
     // HTML GET Requests
@@ -13,38 +13,45 @@ module.exports = function (app) {
     });
 
     app.post("/api/friends", function (req, res) {
-        // Empty out the arrays of data
-        // tableData.length = 0;
-        // waitListData.length = 0;
-        var newPerson = req.body;
+        var newFriendScores = req.body.scores;
+        var scoresArray = [];
+        var friendCount = 0;
+        var bestMatch = 0;
 
-        // var newPersonTotalScore= 10;
-        // var lowestDifference = 2;
-        // var lowestMatch = ""
 
 
 
         for (let i = 0; i < friendsData.length; i++) {
-            const element = friendsData[i];
-            const elementTotalScore = 8;
-            console.log(element);
+            var scoresDiff = 0;
+            //run through scores to compare friends
+            for (var j = 0; j < newFriendScores.length; j++) {
+                scoresDiff += (Math.abs(parseInt(friendsData[i].scores[j]) - parseInt(newFriendScores[j])));
+            }
+
+
+            //push results into scoresArray
+            scoresArray.push(scoresDiff);
         }
+        //after all friends are compared, find best match
+        for (var i = 0; i < scoresArray.length; i++) {
+            if (scoresArray[i] <= scoresArray[bestMatch]) {
+                bestMatch = i;
+            }
+        }
+        //return bestMatch data
+        var bff = friendsData[bestMatch];
+        res.json(bff);
 
-        // if (friendsData.length < 5) {
-        //     tableData.push(req.body);
-        //     res.json(true);
-        //   }
-        //   else {
-        //     waitListData.push(req.body);
-        //     res.json(false);
-        //   }
-
-        res.send("Hello World");
-        res.json({ ok: true });
+        //pushes new submission into the friendsdata array
+        friendsData.push(req.body);
     });
 
-    // app.post("/api/clear", function (req, res) {
-    //     res.json({ ok: true });
-    // })
 
 };
+
+
+
+// console.log(res.body)
+// res.json({ ok: true });
+
+
